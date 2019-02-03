@@ -5,7 +5,7 @@ from math import sqrt
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 prompt = "Enter the next number in the list. Press 'q' when finished: "
 
-@click.version_option(version='1.0.4')
+@click.version_option(version='1.0.6')
 
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.option('--mean', is_flag=True, help="Calculate the mean.")
@@ -14,6 +14,7 @@ prompt = "Enter the next number in the list. Press 'q' when finished: "
 @click.option('--median', is_flag=True, help="Calculate the median.")
 @click.option('--midrange', is_flag=True, help="Calculate the midrange.")
 @click.option('--stddev', '-sd', is_flag=True, help="Calculate the standard deviation.")
+@click.option('--variance', is_flag=True, help="Calculate the variance")
 #make --rounded_to option nested and indivudual for each function
 @click.option('--rounded_to', '-rt', default=2, help='Round mean to this number of decimal places. (default=2)')
 def calculate(**kwargs):
@@ -36,6 +37,8 @@ def calculate(**kwargs):
 		get_midrange(numlist)
 	if kwargs['stddev']:
 		get_standard_deviation(numlist)
+	if kwargs['variance']:
+		get_variance(numlist)
 
 		
 def get_values(prompt):
@@ -75,15 +78,30 @@ def get_median(numlist):
 		median = round(numlist[length//2], 1)
 	click.echo("Median is: " + str(median))
 
+
 def get_midrange(numlist):
 	numlist = sorted(numlist)
 	min, max = numlist[0], numlist[len(numlist) - 1]
 	midrange = (min + max) / 2
 	click.echo("The calculated midrange is " + str(midrange))
 
+
 def get_standard_deviation(numlist):
-	mean = float(sum(numlist) / max(len(numlist), 1))
-	squared_sum = sum((x - mean)**2 for x in numlist)
+	squared_sum = get_squared_sum(numlist)
 	stddev = round(sqrt(squared_sum / len(numlist)), 4)
 	click.echo("The calculated standard deviation is " + str(stddev))
+
+
+def get_variance(numlist):
+	squared_sum = get_squared_sum(numlist)
+	variance = round(squared_sum / len(numlist), 4)
+	click.echo("The calculated variance is " + str(variance))
+
+
+#helper function for variance and stddev functions
+def get_squared_sum(numlist):
+	mean = float(sum(numlist) / max(len(numlist), 1))
+	return sum((x - mean)**2 for x in numlist)
+
+
 	
