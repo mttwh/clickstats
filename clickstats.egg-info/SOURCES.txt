@@ -1,0 +1,8 @@
+README.md
+clickstats.py
+clickstats.egg-info/PKG-INFO
+clickstats.egg-info/SOURCES.txt
+clickstats.egg-info/dependency_links.txt
+clickstats.egg-info/entry_points.txt
+clickstats.egg-info/requires.txt
+clickstats.egg-info/top_level.txt

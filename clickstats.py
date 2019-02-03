@@ -10,11 +10,13 @@ prompt = "Enter the next number in the list. Press 'q' when finished: "
 @click.option('--mean', is_flag=True, help="Calculate the mean.")
 @click.option('--mode', is_flag=True, help="Calculate the mode.")
 @click.option('--range', is_flag=True, help="Calculate the range.")
+@click.option('--median', is_flag=True, help="Calculate the median.")
+@click.option('--midrange', is_flag=True, help="Calculate the range")
 #make --rounded_to option nested and indivudual for each function
 @click.option('--rounded_to', '-rt', default=2, help='Round mean to this number of decimal places. (default=2)')
 def calculate(**kwargs):
 	numlist = get_values(prompt)
-	click.echo(numlist)
+	click.echo(sorted(numlist))
 	if kwargs['mean']:
 		rounded_to = kwargs['rounded_to']
 		mean = float(sum(numlist) / max(len(numlist), 1))
@@ -26,6 +28,11 @@ def calculate(**kwargs):
 		rnge = sorted(numlist)[len(numlist) - 1] - sorted(numlist)[0]
 		rounded_rnge = round(rnge, rounded_to)
 		click.echo("The calculated range is: " + str(rounded_rnge))
+	if kwargs['median']:
+		get_median(numlist)
+	if kwargs['midrange']:
+		get_midrange(numlist)
+
 		
 def get_values(prompt):
 	numlist = []
@@ -42,16 +49,34 @@ def get_values(prompt):
 			numlist.append(num)
 			continue	
 	return numlist
+
 	
 def get_mode(numlist):
 	data = dict(Counter(numlist))
-	#get_mode = dict(data)
 	mode = [k for k, v in data.items() if v == max(list(data.values()))]
 	if len(mode) == len(numlist):
 		click.echo("No mode found")
 	else:
 		click.echo("The mode(s) is/are: " + ', '.join(map(str, mode)))
-	
 
-if __name__ == '__main__':
-	calculate()
+
+def get_median(numlist):
+	length = len(numlist)
+	numlist.sort()
+	if length % 2 == 0:
+		median1 = numlist[length//2]
+		median2 = numlist[length//2 - 1]
+		median = (median1 + median2)/2
+	else:
+		median = round(numlist[length//2], 1)
+	click.echo("Median is: " + str(median))
+
+def get_midrange(numlist):
+	numlist = sorted(numlist)
+	min = numlist[0]
+	max = numlist[len(numlist) - 1]
+	mi, ma = numlist[0], numlist[len(numlist) - 1]
+	midrange = (min + max) / 2
+	click.echo("The calculated midrange is " + str(midrange))
+	click.echo("The min is " + str(mi) + " and the max is " + str(ma))
+	
